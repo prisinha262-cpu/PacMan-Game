@@ -10,14 +10,47 @@ let pacman = {
   dy: 0
 };
 
+// Pellets array
+let pellets = [];
+let score = 0;
+
+// Create pellets on grid
+function createPellets() {
+  for (let i = 40; i < canvas.width; i += 40) {
+    for (let j = 40; j < canvas.height; j += 40) {
+      pellets.push({ x: i, y: j, eaten: false });
+    }
+  }
+}
+
+// Draw pellets
+function drawPellets() {
+  pellets.forEach(p => {
+    if (!p.eaten) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = "white";
+      ctx.fill();
+      ctx.closePath();
+    }
+  });
+}
+
 // Draw Pac-Man
 function drawPacman() {
   ctx.beginPath();
-  ctx.arc(pacman.x, pacman.y, pacman.size, 0.2 * Math.PI, 1.8 * Math.PI); 
+  ctx.arc(pacman.x, pacman.y, pacman.size, 0.2 * Math.PI, 1.8 * Math.PI);
   ctx.lineTo(pacman.x, pacman.y);
   ctx.fillStyle = "yellow";
   ctx.fill();
   ctx.closePath();
+}
+
+// Draw Score
+function drawScore() {
+  ctx.fillStyle = "yellow";
+  ctx.font = "20px Arial";
+  ctx.fillText("Score: " + score, 10, 20);
 }
 
 // Clear screen
@@ -28,7 +61,9 @@ function clearCanvas() {
 // Update game
 function update() {
   clearCanvas();
+  drawPellets();
   drawPacman();
+  drawScore();
 
   // Move Pac-Man
   pacman.x += pacman.dx;
@@ -39,6 +74,15 @@ function update() {
   if (pacman.x > canvas.width) pacman.x = 0;
   if (pacman.y < 0) pacman.y = canvas.height;
   if (pacman.y > canvas.height) pacman.y = 0;
+
+  // Check collision with pellets
+  pellets.forEach(p => {
+    let dist = Math.hypot(pacman.x - p.x, pacman.y - p.y);
+    if (!p.eaten && dist < pacman.size) {
+      p.eaten = true;
+      score += 10;
+    }
+  });
 
   requestAnimationFrame(update);
 }
@@ -56,4 +100,6 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+// Start game
+createPellets();
 update();
