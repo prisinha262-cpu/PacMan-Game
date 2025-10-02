@@ -1,0 +1,11 @@
+body {
+  text-align: center;
+  background: black;
+  color: yellow;
+  font-family: Arial, sans-serif;
+}
+
+canvas {
+  border: 2px solid yellow;
+  background: #111;
+}
