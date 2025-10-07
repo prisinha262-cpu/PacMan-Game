@@ -8,8 +8,25 @@
 </head>
 <body>
   <h1>Pac-Man Game</h1>
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
-  
+
+  <div id="auth">
+    <h2>Login / Register</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <button id="registerBtn">Register</button>
+  </div>
+
+  <div id="gameArea" style="display:none;">
+    <h2 id="welcome"></h2>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <p>Score: <span id="score">0</span></p>
+    <button id="restartBtn">Restart</button>
+
+    <h3>Leaderboard</h3>
+    <ul id="leaderboard"></ul>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>

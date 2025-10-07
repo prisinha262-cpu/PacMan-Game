@@ -1,105 +1,112 @@
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-
-// Pac-Man object
-let pacman = {
-  x: 50,
-  y: 50,
-  size: 20,
-  dx: 20,
-  dy: 0
-};
-
-// Pellets array
-let pellets = [];
+const api = "http://localhost:5000";
+let username = "";
 let score = 0;
 
-// Create pellets on grid
-function createPellets() {
-  for (let i = 40; i < canvas.width; i += 40) {
-    for (let j = 40; j < canvas.height; j += 40) {
-      pellets.push({ x: i, y: j, eaten: false });
-    }
-  }
-}
+// Buttons
+const loginBtn = document.getElementById("loginBtn");
+const registerBtn = document.getElementById("registerBtn");
+const restartBtn = document.getElementById("restartBtn");
 
-// Draw pellets
-function drawPellets() {
-  pellets.forEach(p => {
-    if (!p.eaten) {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = "white";
-      ctx.fill();
-      ctx.closePath();
-    }
-  });
-}
+loginBtn.onclick = async () => {
+  const user = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
+  if (!user || !pass) return alert("Fill all fields!");
 
-// Draw Pac-Man
-function drawPacman() {
-  ctx.beginPath();
-  ctx.arc(pacman.x, pacman.y, pacman.size, 0.2 * Math.PI, 1.8 * Math.PI);
-  ctx.lineTo(pacman.x, pacman.y);
-  ctx.fillStyle = "yellow";
-  ctx.fill();
-  ctx.closePath();
-}
-
-// Draw Score
-function drawScore() {
-  ctx.fillStyle = "yellow";
-  ctx.font = "20px Arial";
-  ctx.fillText("Score: " + score, 10, 20);
-}
-
-// Clear screen
-function clearCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-// Update game
-function update() {
-  clearCanvas();
-  drawPellets();
-  drawPacman();
-  drawScore();
-
-  // Move Pac-Man
-  pacman.x += pacman.dx;
-  pacman.y += pacman.dy;
-
-  // Wall collision
-  if (pacman.x < 0) pacman.x = canvas.width;
-  if (pacman.x > canvas.width) pacman.x = 0;
-  if (pacman.y < 0) pacman.y = canvas.height;
-  if (pacman.y > canvas.height) pacman.y = 0;
-
-  // Check collision with pellets
-  pellets.forEach(p => {
-    let dist = Math.hypot(pacman.x - p.x, pacman.y - p.y);
-    if (!p.eaten && dist < pacman.size) {
-      p.eaten = true;
-      score += 10;
-    }
+  const res = await fetch(`${api}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: user, password: pass })
   });
 
-  requestAnimationFrame(update);
+  const data = await res.json();
+  if (res.ok) {
+    username = data.username;
+    startGame();
+  } else alert(data.error);
+};
+
+registerBtn.onclick = async () => {
+  const user = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
+  if (!user || !pass) return alert("Fill all fields!");
+
+  const res = await fetch(`${api}/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: user, password: pass })
+  });
+
+  const data = await res.json();
+  alert(data.message || data.error);
+};
+
+function startGame() {
+  document.getElementById("auth").style.display = "none";
+  document.getElementById("gameArea").style.display = "block";
+  document.getElementById("welcome").innerText = `Welcome, ${username}!`;
+
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
+  let pacman = { x: 200, y: 200, size: 20 };
+  let food = { x: Math.random() * 380, y: Math.random() * 380 };
+  score = 0;
+  document.getElementById("score").innerText = score;
+
+  function draw() {
+    ctx.clearRect(0, 0, 400, 400);
+    ctx.fillStyle = "yellow";
+    ctx.beginPath();
+    ctx.arc(pacman.x, pacman.y, pacman.size / 2, 0.2 * Math.PI, 1.8 * Math.PI);
+    ctx.lineTo(pacman.x, pacman.y);
+    ctx.fill();
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x, food.y, 10, 10);
+  }
+
+  function update() {
+    if (Math.abs(pacman.x - food.x) < 10 && Math.abs(pacman.y - food.y) < 10) {
+      score++;
+      document.getElementById("score").innerText = score;
+      food = { x: Math.random() * 380, y: Math.random() * 380 };
+    }
+  }
+
+  window.addEventListener("keydown", e => {
+    if (e.key === "ArrowUp") pacman.y -= 10;
+    if (e.key === "ArrowDown") pacman.y += 10;
+    if (e.key === "ArrowLeft") pacman.x -= 10;
+    if (e.key === "ArrowRight") pacman.x += 10;
+  });
+
+  function loop() {
+    draw();
+    update();
+    requestAnimationFrame(loop);
+  }
+  loop();
+  loadLeaderboard();
 }
 
-// Controls
-document.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowRight") {
-    pacman.dx = 20; pacman.dy = 0;
-  } else if (e.key === "ArrowLeft") {
-    pacman.dx = -20; pacman.dy = 0;
-  } else if (e.key === "ArrowUp") {
-    pacman.dy = -20; pacman.dx = 0;
-  } else if (e.key === "ArrowDown") {
-    pacman.dy = 20; pacman.dx = 0;
-  }
-});
+restartBtn.onclick = async () => {
+  await fetch(`${api}/update-score`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, score })
+  });
+  alert("Game Over! Your score saved.");
+  loadLeaderboard();
+  location.reload();
+};
 
-// Start game
-createPellets();
-update();
+async function loadLeaderboard() {
+  const res = await fetch(`${api}/leaderboard`);
+  const data = await res.json();
+  const board = document.getElementById("leaderboard");
+  board.innerHTML = "";
+  data.forEach(u => {
+    const li = document.createElement("li");
+    li.textContent = `${u.username}: ${u.highScore}`;
+    board.appendChild(li);
+  });
+}
