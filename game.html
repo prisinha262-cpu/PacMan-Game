@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Pac-Man — Play</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <h1 id="title">Pac-Man</h1>
+
+  <div class="game-wrap">
+    <div class="left">
+      <canvas id="gameCanvas" width="420" height="420"></canvas>
+      <div class="controls">
+        <button id="startSoundBtn" class="yellow">Start Music</button>
+        <button id="restartBtn" class="yellow">Restart</button>
+        <button id="logoutBtn" class="yellow">Logout</button>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="info">
+        <p>Player: <span id="playerName">—</span></p>
+        <p>Score: <span id="score">0</span></p>
+        <p>Lives: <span id="lives">3</span></p>
+      </div>
+
+      <h3>Leaderboard</h3>
+      <ul id="leaderboard"></ul>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

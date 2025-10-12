@@ -1,69 +1,24 @@
-/* Body styling */
-body {
-  text-align: center;
-  background: #111;
-  color: yellow;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
-}
+/* style.css */
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,Arial,sans-serif;background:#080808;color:#ffe600}
+.bg-canvas{position:fixed;inset:0;z-index:0}
+.center-box{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px}
+.title{font-size:56px;margin:0;text-shadow:0 0 24px rgba(255,234,0,0.18)}
+.login-box{width:520px;max-width:95%;background:rgba(0,0,0,0.6);border-radius:12px;padding:22px;border:2px solid rgba(255,234,0,0.14);box-shadow:0 12px 40px rgba(255,234,0,0.06);text-align:center}
+.login-box h2{margin:0 0 12px;font-size:22px;color:#fff}
+.login-box input{width:80%;padding:12px;margin:8px 0;border-radius:8px;border:none;outline:none}
+.btn-row{display:flex;justify-content:center;gap:12px;margin-top:8px}
+.yellow{background:#ffe600;color:#000;border:none;padding:10px 14px;border-radius:9px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 rgba(189,168,0,0.7)}
+#message{margin-top:10px;font-weight:700}
+.hint{color:#ddd;opacity:0.75;font-size:13px}
 
-/* Game Canvas */
-canvas {
-  border: 3px solid yellow;
-  background: #222;
-  display: block;
-  margin: 20px auto;
-  border-radius: 10px;
-}
-
-/* Player input */
-#playerDiv {
-  margin-bottom: 20px;
-}
-
-#username {
-  padding: 8px 12px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: none;
-  outline: none;
-}
-
-#startBtn {
-  padding: 8px 16px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: none;
-  background: yellow;
-  color: black;
-  cursor: pointer;
-  margin-left: 10px;
-}
-
-#startBtn:hover {
-  background: gold;
-}
-
-/* Leaderboard styling */
-#leaderboard {
-  list-style: none;
-  padding: 0;
-  max-width: 300px;
-  margin: 20px auto;
-  text-align: left;
-  background: #222;
-  border: 2px solid yellow;
-  border-radius: 10px;
-}
-
-#leaderboard li {
-  padding: 8px 12px;
-  border-bottom: 1px solid yellow;
-  color: white;
-  font-weight: bold;
-}
-
-#leaderboard li:last-child {
-  border-bottom: none;
-}
+/* Game layout */
+.game-wrap{display:flex;gap:28px;justify-content:center;align-items:flex-start;margin-top:24px;padding:18px;z-index:2;position:relative}
+.left{z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px}
+.right{width:300px;background:rgba(255,255,255,0.02);border-radius:10px;padding:12px;color:#fff;border:1px solid rgba(255,234,0,0.06)}
+#gameCanvas{background:#0b0b0b;border-radius:10px;border:3px solid #ffe600;box-shadow:0 0 30px rgba(255,234,0,0.06)}
+.controls{display:flex;gap:10px}
+.info p{margin:8px 0}
+#leaderboard{list-style:none;padding:0;margin:8px 0;color:#fff}
+#leaderboard li{padding:8px 10px;border-bottom:1px dashed rgba(255,255,255,0.04)}
+@media (max-width:900px){.game-wrap{flex-direction:column;align-items:center}.right{width:90%}.login-box input{width:92%}}
